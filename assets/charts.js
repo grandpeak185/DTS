@@ -85,7 +85,7 @@
   cargoChart.setOption({
     animation: false,
     tooltip: { trigger: 'item', appendToBody: true, formatter: '{b}: {c}%' },
-    legend: { bottom: 5, textStyle: { color: muted, fontSize: 11 } },
+    legend: { show: false },
     series: [{
       type: 'pie',
       radius: ['35%', '65%'],
@@ -116,7 +116,7 @@
   shareChart.setOption({
     animation: false,
     tooltip: { trigger: 'item', appendToBody: true, formatter: '{b}: {c}%' },
-    legend: { bottom: 5, textStyle: { color: muted, fontSize: 11 } },
+    legend: { show: false },
     series: [{
       type: 'pie',
       radius: '62%',
@@ -263,7 +263,7 @@
   hainanShareChart.setOption({
     animation: false,
     tooltip: { trigger: 'item', appendToBody: true, formatter: '{b}: {c}%' },
-    legend: { bottom: 5, textStyle: { color: muted, fontSize: 11 } },
+    legend: { show: false },
     series: [{
       type: 'pie',
       radius: ['38%', '65%'],

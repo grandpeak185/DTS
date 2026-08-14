@@ -233,7 +233,7 @@
         type: 'bar',
         barWidth: '25%',
         stack: 'total',
-        data: [222, 160],
+        data: [222, 90],
         itemStyle: {
           color: accent,
           borderRadius: [0, 0, 0, 0]
@@ -245,7 +245,7 @@
         type: 'bar',
         barWidth: '25%',
         stack: 'total',
-        data: [109, 34],
+        data: [109, 104],
         itemStyle: {
           color: accent3,
           borderRadius: [4, 4, 0, 0]
@@ -284,11 +284,11 @@
       },
       labelLine: { length: 12, length2: 12 },
       data: [
-        { value: 61, name: '泛亚航运', itemStyle: { color: accent } },
+        { value: 62, name: '泛亚航运', itemStyle: { color: accent } },
         { value: 18, name: '安通控股', itemStyle: { color: accent3 } },
         { value: 5, name: '中谷物流', itemStyle: { color: accent2 } },
         { value: 2, name: '信风海运', itemStyle: { color: '#8e44ad' } },
-        { value: 14, name: '其他船公司', itemStyle: { color: muted } }
+        { value: 13, name: '其他船公司', itemStyle: { color: muted } }
       ]
     }]
   });

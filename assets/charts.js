@@ -284,11 +284,11 @@
       },
       labelLine: { length: 12, length2: 12 },
       data: [
-        { value: 62, name: '泛亚航运', itemStyle: { color: accent } },
-        { value: 17, name: '安通控股', itemStyle: { color: accent3 } },
-        { value: 5, name: '中谷物流', itemStyle: { color: accent2 } },
-        { value: 2, name: '信风海运', itemStyle: { color: '#8e44ad' } },
-        { value: 14, name: '其他船公司', itemStyle: { color: muted } }
+        { value: 56, name: '泛亚航运', itemStyle: { color: accent } },
+        { value: 22, name: '安通控股', itemStyle: { color: accent3 } },
+        { value: 12, name: '中谷物流', itemStyle: { color: accent2 } },
+        { value: 3, name: '信风海运', itemStyle: { color: '#8e44ad' } },
+        { value: 7, name: '其他船公司', itemStyle: { color: muted } }
       ]
     }]
   });

@@ -23,7 +23,7 @@
     grid: { left: '8%', right: '5%', bottom: '12%', top: '10%', containLabel: true },
     xAxis: {
       type: 'category',
-      data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月'],
+      data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月'],
       axisLine: axisLine,
       axisLabel: axisLabel
     },
@@ -44,7 +44,7 @@
         smooth: true,
         symbol: 'circle',
         symbolSize: 7,
-        data: [1220, 1180, 1200, 1057, 1006, 970, 973],
+        data: [1220, 1180, 1200, 1057, 1006, 970, 973, 967],
         itemStyle: { color: accent },
         lineStyle: { width: 3, color: accent },
         areaStyle: {
@@ -61,7 +61,7 @@
           symbolSize: 40,
           data: [
             { name: 'Q1高点', value: 1220, xAxis: 0, yAxis: 1220, itemStyle: { color: positive } },
-            { name: '最低', value: 970, xAxis: 5, yAxis: 970, itemStyle: { color: negative } }
+            { name: '最低', value: 967, xAxis: 7, yAxis: 967, itemStyle: { color: negative } }
           ],
           label: { fontSize: 10, color: '#fff' }
         }
@@ -72,7 +72,7 @@
         smooth: true,
         symbol: 'circle',
         symbolSize: 5,
-        data: [1120, 1085, 1150, 1130, 1100, 1080, 1027],
+        data: [1120, 1085, 1150, 1130, 1100, 1080, 1027, 1050],
         itemStyle: { color: muted },
         lineStyle: { width: 1.5, color: muted, type: 'dashed' }
       }
@@ -285,10 +285,10 @@
       labelLine: { length: 12, length2: 12 },
       data: [
         { value: 62, name: '泛亚航运', itemStyle: { color: accent } },
-        { value: 18, name: '安通控股', itemStyle: { color: accent3 } },
+        { value: 17, name: '安通控股', itemStyle: { color: accent3 } },
         { value: 5, name: '中谷物流', itemStyle: { color: accent2 } },
         { value: 2, name: '信风海运', itemStyle: { color: '#8e44ad' } },
-        { value: 13, name: '其他船公司', itemStyle: { color: muted } }
+        { value: 14, name: '其他船公司', itemStyle: { color: muted } }
       ]
     }]
   });

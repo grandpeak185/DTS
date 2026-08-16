@@ -1,307 +1,297 @@
-/**
- * 内贸集装箱航运纵横 - 图表配置
- */
+(function() {
+  var style = getComputedStyle(document.documentElement);
+  var accent = style.getPropertyValue('--accent').trim();
+  var accent2 = style.getPropertyValue('--accent2').trim();
+  var accent3 = style.getPropertyValue('--accent3').trim();
+  var ink = style.getPropertyValue('--ink').trim();
+  var muted = style.getPropertyValue('--muted').trim();
+  var rule = style.getPropertyValue('--rule').trim();
+  var bg2 = style.getPropertyValue('--bg2').trim();
+  var positive = style.getPropertyValue('--positive').trim();
+  var negative = style.getPropertyValue('--negative').trim();
 
-// 海南内贸市场份额数据（三步内贸加权法计算结果）
-const hainanMarketData = {
-  companies: ['泛亚航运', '安通控股', '中谷物流', '信风海运', '其他'],
-  shares: [58.69, 20.66, 11.39, 2.85, 7.41],
-  colors: ['#1a5276', '#2874a6', '#5499c7', '#85c1e9', '#d4e6f1']
-};
+  var axisLine = { lineStyle: { color: rule } };
+  var axisLabel = { color: muted, fontSize: 11 };
+  var splitLine = { lineStyle: { color: rule, type: 'dashed' } };
 
-// PDCI运价指数走势（近10周）
-const pdciTrendData = {
-  weeks: ['6/2-6/8', '6/9-6/15', '6/16-6/22', '6/23-6/29', '6/30-7/6', '7/7-7/13', '7/14-7/20', '7/21-7/27', '7/25-7/31', '8/1-8/7'],
-  values: [985, 978, 972, 965, 958, 955, 948, 955, 973, 967]
-};
-
-// 洋浦港集装箱吞吐量走势（2026年月度）
-const yangpuVolumeData = {
-  months: ['1月', '2月', '3月', '4月', '5月', '6月'],
-  values: [32.9, 28.5, 36.97, 35.2, 33.8, 32.5] // 单位：万标箱，1月封关首月32.9万，Q1合计98.37万
-};
-
-// 船公司股价走势（近5日，模拟数据基于搜索结果）
-const stockPriceData = {
-  days: ['8/11', '8/12', '8/13', '8/14', '8/15'],
-  zhonggu: [10.95, 10.88, 10.92, 10.85, 10.48], // 中谷物流
-  antong: [3.25, 3.28, 3.35, 3.42, 3.38]        // 安通控股（重组预期推动）
-};
-
-// 区域子指数最新数据
-const regionalIndexData = {
-  regions: ['东北', '华北', '福建', '山东', '华东', '华南'],
-  values: [1025, 980, 945, 960, 955, 875],
-  changes: [1.2, 0.8, 0.5, -0.9, -1.1, -1.5]
-};
-
-/**
- * 渲染海南内贸市场份额饼图
- */
-function renderHainanMarketChart() {
-  const container = document.getElementById('chart-hainan-market');
-  if (!container) return;
-  const width = container.clientWidth;
-  const height = Math.min(width * 0.6, 320);
-  const radius = Math.min(width, height) / 2 - 20;
-  const cx = width / 2;
-  const cy = height / 2;
-
-  let svg = `<svg viewBox="0 0 ${width} ${height}" style="width:100%;height:auto;">`;
-  let startAngle = 0;
-
-  hainanMarketData.shares.forEach((share, i) => {
-    const angle = (share / 100) * Math.PI * 2;
-    const endAngle = startAngle + angle;
-    const x1 = cx + radius * Math.cos(startAngle);
-    const y1 = cy + radius * Math.sin(startAngle);
-    const x2 = cx + radius * Math.cos(endAngle);
-    const y2 = cy + radius * Math.sin(endAngle);
-    const largeArc = angle > Math.PI ? 1 : 0;
-
-    const path = `M ${cx} ${cy} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} Z`;
-    svg += `<path d="${path}" fill="${hainanMarketData.colors[i]}" stroke="#fff" stroke-width="2" />`;
-
-    // 标签
-    const labelAngle = startAngle + angle / 2;
-    const labelR = radius * 0.65;
-    const lx = cx + labelR * Math.cos(labelAngle);
-    const ly = cy + labelR * Math.sin(labelAngle);
-    svg += `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="12" font-weight="bold">${share}%</text>`;
-
-    startAngle = endAngle;
+  // ===== Chart 1: 2026年PDCI运价指数走势（vs 2025对比）=====
+  var pdciChart = echarts.init(document.getElementById('chart-pdci'), null, { renderer: 'svg' });
+  pdciChart.setOption({
+    animation: false,
+    tooltip: { trigger: 'axis', appendToBody: true },
+    legend: { bottom: 5, textStyle: { color: muted, fontSize: 11 } },
+    grid: { left: '8%', right: '5%', bottom: '12%', top: '10%', containLabel: true },
+    xAxis: {
+      type: 'category',
+      data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月'],
+      axisLine: axisLine,
+      axisLabel: axisLabel
+    },
+    yAxis: {
+      type: 'value',
+      name: '指数点',
+      nameTextStyle: { color: muted, fontSize: 11 },
+      min: 900,
+      max: 1300,
+      axisLine: axisLine,
+      axisLabel: axisLabel,
+      splitLine: splitLine
+    },
+    series: [
+      {
+        name: '2026年PDCI',
+        type: 'line',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 7,
+        data: [1220, 1180, 1200, 1057, 1006, 970, 973],
+        itemStyle: { color: accent },
+        lineStyle: { width: 3, color: accent },
+        areaStyle: {
+          color: {
+            type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [
+              { offset: 0, color: accent + '40' },
+              { offset: 1, color: accent + '05' }
+            ]
+          }
+        },
+        markPoint: {
+          symbol: 'pin',
+          symbolSize: 40,
+          data: [
+            { name: 'Q1高点', value: 1220, xAxis: 0, yAxis: 1220, itemStyle: { color: positive } },
+            { name: '最低', value: 970, xAxis: 5, yAxis: 970, itemStyle: { color: negative } }
+          ],
+          label: { fontSize: 10, color: '#fff' }
+        }
+      },
+      {
+        name: '2025年同期PDCI',
+        type: 'line',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 5,
+        data: [1120, 1085, 1150, 1130, 1100, 1080, 1027],
+        itemStyle: { color: muted },
+        lineStyle: { width: 1.5, color: muted, type: 'dashed' }
+      }
+    ]
   });
+  window.addEventListener('resize', function() { pdciChart.resize(); });
 
-  // 图例
-  const legendX = width > 400 ? width - 100 : 10;
-  const legendY = width > 400 ? 20 : height - 80;
-  hainanMarketData.companies.forEach((name, i) => {
-    const ly = legendY + i * 22;
-    svg += `<rect x="${legendX}" y="${ly}" width="12" height="12" fill="${hainanMarketData.colors[i]}" rx="2"/>`;
-    svg += `<text x="${legendX + 18}" y="${ly + 10}" font-size="11" fill="#333">${name}</text>`;
+  // ===== Chart 2: 货源结构（2026年）=====
+  var cargoChart = echarts.init(document.getElementById('chart-cargo'), null, { renderer: 'svg' });
+  cargoChart.setOption({
+    animation: false,
+    tooltip: { trigger: 'item', appendToBody: true, formatter: '{b}: {c}%' },
+    legend: { show: false },
+    series: [{
+      type: 'pie',
+      radius: ['35%', '65%'],
+      center: ['50%', '45%'],
+      avoidLabelOverlap: true,
+      itemStyle: { borderRadius: 6, borderColor: bg2, borderWidth: 2 },
+      label: {
+        show: true,
+        formatter: '{b}\n{d}%',
+        color: ink,
+        fontSize: 11
+      },
+      labelLine: { length: 12, length2: 12 },
+      data: [
+        { value: 35, name: '煤炭', itemStyle: { color: accent } },
+        { value: 25, name: '矿石', itemStyle: { color: accent2 } },
+        { value: 15, name: '建材', itemStyle: { color: accent3 } },
+        { value: 12, name: '粮食', itemStyle: { color: positive } },
+        { value: 8, name: '钢材/纸浆', itemStyle: { color: '#8e44ad' } },
+        { value: 5, name: '其他', itemStyle: { color: muted } }
+      ]
+    }]
   });
+  window.addEventListener('resize', function() { cargoChart.resize(); });
 
-  svg += '</svg>';
-  container.innerHTML = svg;
-}
-
-/**
- * 渲染PDCI运价指数走势图
- */
-function renderPDCITrendChart() {
-  const container = document.getElementById('chart-pdci-trend');
-  if (!container) return;
-  const width = container.clientWidth;
-  const height = Math.min(width * 0.5, 280);
-  const padding = { top: 20, right: 30, bottom: 40, left: 50 };
-  const chartW = width - padding.left - padding.right;
-  const chartH = height - padding.top - padding.bottom;
-
-  const minVal = Math.min(...pdciTrendData.values) - 20;
-  const maxVal = Math.max(...pdciTrendData.values) + 20;
-
-  let svg = `<svg viewBox="0 0 ${width} ${height}" style="width:100%;height:auto;">`;
-
-  // 网格线
-  for (let i = 0; i <= 4; i++) {
-    const y = padding.top + (chartH / 4) * i;
-    const val = Math.round(maxVal - (maxVal - minVal) / 4 * i);
-    svg += `<line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" stroke="#e0e0e0" stroke-width="1"/>`;
-    svg += `<text x="${padding.left - 8}" y="${y + 4}" text-anchor="end" font-size="10" fill="#888">${val}</text>`;
-  }
-
-  // 折线
-  let pathD = '';
-  pdciTrendData.values.forEach((val, i) => {
-    const x = padding.left + (chartW / (pdciTrendData.values.length - 1)) * i;
-    const y = padding.top + chartH - ((val - minVal) / (maxVal - minVal)) * chartH;
-    pathD += (i === 0 ? 'M' : 'L') + ` ${x} ${y}`;
+  // ===== Chart 3: 内贸集运市场份额（2026年）=====
+  var shareChart = echarts.init(document.getElementById('chart-share'), null, { renderer: 'svg' });
+  shareChart.setOption({
+    animation: false,
+    tooltip: { trigger: 'item', appendToBody: true, formatter: '{b}: {c}%' },
+    legend: { show: false },
+    series: [{
+      type: 'pie',
+      radius: '62%',
+      center: ['50%', '45%'],
+      itemStyle: { borderRadius: 4, borderColor: bg2, borderWidth: 2 },
+      label: {
+        formatter: '{b}\n{d}%',
+        color: ink,
+        fontSize: 11
+      },
+      data: [
+        { value: 40.2, name: '泛亚航运', itemStyle: { color: accent } },
+        { value: 20.6, name: '中谷物流', itemStyle: { color: accent2 } },
+        { value: 15.8, name: '安通控股', itemStyle: { color: accent3 } },
+        { value: 4, name: '信风海运', itemStyle: { color: '#8e44ad' } },
+        { value: 19.4, name: '其他船公司', itemStyle: { color: muted } }
+      ]
+    }]
   });
-  svg += `<path d="${pathD}" fill="none" stroke="#1a5276" stroke-width="2.5" stroke-linejoin="round"/>`;
+  window.addEventListener('resize', function() { shareChart.resize(); });
 
-  // 数据点和数值
-  pdciTrendData.values.forEach((val, i) => {
-    const x = padding.left + (chartW / (pdciTrendData.values.length - 1)) * i;
-    const y = padding.top + chartH - ((val - minVal) / (maxVal - minVal)) * chartH;
-    svg += `<circle cx="${x}" cy="${y}" r="4" fill="#1a5276" stroke="#fff" stroke-width="2"/>`;
-    if (i === pdciTrendData.values.length - 1) {
-      svg += `<text x="${x}" y="${y - 10}" text-anchor="middle" font-size="11" fill="#1a5276" font-weight="bold">${val}</text>`;
-    }
+  // ===== Chart 4: 三强企业雷达对比（2026年）=====
+  var radarChart = echarts.init(document.getElementById('chart-radar'), null, { renderer: 'svg' });
+  radarChart.setOption({
+    animation: false,
+    tooltip: { appendToBody: true },
+    legend: { bottom: 5, textStyle: { color: muted, fontSize: 11 } },
+    radar: {
+      indicator: [
+        { name: '运力规模', max: 100 },
+        { name: '网络覆盖', max: 100 },
+        { name: '成本控制', max: 100 },
+        { name: '盈利能力', max: 100 },
+        { name: '海南布局', max: 100 },
+        { name: '政策红利', max: 100 }
+      ],
+      center: ['50%', '48%'],
+      radius: '62%',
+      axisName: { color: ink, fontSize: 11 },
+      splitLine: { lineStyle: { color: rule } },
+      splitArea: { areaStyle: { color: [bg2, '#f8fafc'] } },
+      axisLine: { lineStyle: { color: rule } }
+    },
+    series: [{
+      type: 'radar',
+      data: [
+        {
+          value: [92, 95, 75, 72, 70, 85],
+          name: '泛亚航运',
+          itemStyle: { color: accent },
+          areaStyle: { color: accent + '20' },
+          lineStyle: { width: 2 }
+        },
+        {
+          value: [88, 80, 95, 90, 40, 60],
+          name: '中谷物流',
+          itemStyle: { color: accent2 },
+          areaStyle: { color: accent2 + '20' },
+          lineStyle: { width: 2 }
+        },
+        {
+          value: [85, 65, 70, 62, 95, 95],
+          name: '安通控股',
+          itemStyle: { color: accent3 },
+          areaStyle: { color: accent3 + '20' },
+          lineStyle: { width: 2 }
+        },
+        {
+          value: [45, 60, 65, 55, 50, 40],
+          name: '信风海运',
+          itemStyle: { color: '#8e44ad' },
+          areaStyle: { color: '#8e44ad20' },
+          lineStyle: { width: 2 }
+        }
+      ]
+    }]
   });
+  window.addEventListener('resize', function() { radarChart.resize(); });
 
-  // X轴标签
-  pdciTrendData.weeks.forEach((week, i) => {
-    const x = padding.left + (chartW / (pdciTrendData.weeks.length - 1)) * i;
-    svg += `<text x="${x}" y="${height - 15}" text-anchor="middle" font-size="9" fill="#666">${week}</text>`;
+  // ===== Chart 5: 洋浦港内贸vs外贸吞吐量对比 =====
+  var yangpuSplitChart = echarts.init(document.getElementById('chart-yangpu-split'), null, { renderer: 'svg' });
+  yangpuSplitChart.setOption({
+    animation: false,
+    tooltip: {
+      trigger: 'axis',
+      appendToBody: true,
+      formatter: function(params) {
+        var str = params[0].name + '<br/>';
+        params.forEach(function(p) {
+          str += p.marker + p.seriesName + ': ' + p.value + ' 万标箱<br/>';
+        });
+        return str;
+      }
+    },
+    legend: { bottom: 5, textStyle: { color: muted, fontSize: 11 } },
+    grid: { left: '8%', right: '5%', bottom: '12%', top: '10%', containLabel: true },
+    xAxis: {
+      type: 'category',
+      data: ['2025年全年', '2026年H1（估）'],
+      axisLine: axisLine,
+      axisLabel: axisLabel
+    },
+    yAxis: {
+      type: 'value',
+      name: '万标箱',
+      nameTextStyle: { color: muted, fontSize: 11 },
+      axisLine: axisLine,
+      axisLabel: axisLabel,
+      splitLine: splitLine
+    },
+    series: [
+      {
+        name: '内贸箱量',
+        type: 'bar',
+        barWidth: '25%',
+        stack: 'total',
+        data: [222, 90],
+        itemStyle: {
+          color: accent,
+          borderRadius: [0, 0, 0, 0]
+        },
+        label: { show: true, position: 'inside', color: '#fff', fontSize: 11, formatter: '{c}万' }
+      },
+      {
+        name: '外贸箱量',
+        type: 'bar',
+        barWidth: '25%',
+        stack: 'total',
+        data: [109, 104],
+        itemStyle: {
+          color: accent3,
+          borderRadius: [4, 4, 0, 0]
+        },
+        label: { show: true, position: 'inside', color: '#fff', fontSize: 11, formatter: '{c}万' }
+      },
+      {
+        name: '总吞吐量',
+        type: 'line',
+        data: [331, 194],
+        itemStyle: { color: positive },
+        lineStyle: { width: 2, type: 'dashed' },
+        symbol: 'circle',
+        symbolSize: 8,
+        label: { show: true, position: 'top', color: positive, fontSize: 11, formatter: '{c}万' }
+      }
+    ]
   });
+  window.addEventListener('resize', function() { yangpuSplitChart.resize(); });
 
-  svg += '</svg>';
-  container.innerHTML = svg;
-}
-
-/**
- * 渲染洋浦港吞吐量柱状图
- */
-function renderYangpuVolumeChart() {
-  const container = document.getElementById('chart-yangpu-volume');
-  if (!container) return;
-  const width = container.clientWidth;
-  const height = Math.min(width * 0.5, 260);
-  const padding = { top: 20, right: 20, bottom: 35, left: 45 };
-  const chartW = width - padding.left - padding.right;
-  const chartH = height - padding.top - padding.bottom;
-  const barW = chartW / yangpuVolumeData.months.length * 0.6;
-
-  const maxVal = Math.max(...yangpuVolumeData.values) * 1.2;
-
-  let svg = `<svg viewBox="0 0 ${width} ${height}" style="width:100%;height:auto;">`;
-
-  // 网格线
-  for (let i = 0; i <= 4; i++) {
-    const y = padding.top + (chartH / 4) * i;
-    const val = Math.round(maxVal - (maxVal / 4) * i);
-    svg += `<line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" stroke="#e0e0e0" stroke-width="1"/>`;
-    svg += `<text x="${padding.left - 8}" y="${y + 4}" text-anchor="end" font-size="10" fill="#888">${val}</text>`;
-  }
-
-  // 柱状
-  yangpuVolumeData.values.forEach((val, i) => {
-    const x = padding.left + (chartW / yangpuVolumeData.months.length) * i + (chartW / yangpuVolumeData.months.length - barW) / 2;
-    const barH = (val / maxVal) * chartH;
-    const y = padding.top + chartH - barH;
-    svg += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="#2874a6" rx="3"/>`;
-    svg += `<text x="${x + barW / 2}" y="${y - 5}" text-anchor="middle" font-size="10" fill="#333">${val}</text>`;
+  // ===== Chart 6: 海南市场份额（2026年）=====
+  var hainanShareChart = echarts.init(document.getElementById('chart-hainan-share'), null, { renderer: 'svg' });
+  hainanShareChart.setOption({
+    animation: false,
+    tooltip: { trigger: 'item', appendToBody: true, formatter: '{b}: {c}%' },
+    legend: { show: false },
+    series: [{
+      type: 'pie',
+      radius: ['38%', '65%'],
+      center: ['50%', '45%'],
+      itemStyle: { borderRadius: 6, borderColor: bg2, borderWidth: 2 },
+      label: {
+        formatter: '{b}\n{d}%',
+        color: ink,
+        fontSize: 11
+      },
+      labelLine: { length: 12, length2: 12 },
+      data: [
+        { value: 56, name: '泛亚航运', itemStyle: { color: accent } },
+        { value: 22, name: '安通控股', itemStyle: { color: accent3 } },
+        { value: 12, name: '中谷物流', itemStyle: { color: accent2 } },
+        { value: 3, name: '信风海运', itemStyle: { color: '#8e44ad' } },
+        { value: 7, name: '其他船公司', itemStyle: { color: muted } }
+      ]
+    }]
   });
+  window.addEventListener('resize', function() { hainanShareChart.resize(); });
 
-  // X轴标签
-  yangpuVolumeData.months.forEach((month, i) => {
-    const x = padding.left + (chartW / yangpuVolumeData.months.length) * i + (chartW / yangpuVolumeData.months.length) / 2;
-    svg += `<text x="${x}" y="${height - 10}" text-anchor="middle" font-size="11" fill="#666">${month}</text>`;
-  });
-
-  svg += '</svg>';
-  container.innerHTML = svg;
-}
-
-/**
- * 渲染区域子指数横向条形图
- */
-function renderRegionalIndexChart() {
-  const container = document.getElementById('chart-regional-index');
-  if (!container) return;
-  const width = container.clientWidth;
-  const height = 220;
-  const padding = { top: 10, right: 60, bottom: 10, left: 50 };
-  const chartW = width - padding.left - padding.right;
-  const chartH = height - padding.top - padding.bottom;
-  const barH = chartH / regionalIndexData.regions.length * 0.7;
-  const gap = chartH / regionalIndexData.regions.length * 0.3;
-
-  const maxVal = 1200;
-
-  let svg = `<svg viewBox="0 0 ${width} ${height}" style="width:100%;height:auto;">`;
-
-  regionalIndexData.regions.forEach((region, i) => {
-    const y = padding.top + (barH + gap) * i;
-    const bw = (regionalIndexData.values[i] / maxVal) * chartW;
-    const color = regionalIndexData.changes[i] >= 0 ? '#27ae60' : '#e74c3c';
-
-    svg += `<text x="${padding.left - 8}" y="${y + barH / 2 + 4}" text-anchor="end" font-size="11" fill="#333">${region}</text>`;
-    svg += `<rect x="${padding.left}" y="${y}" width="${bw}" height="${barH}" fill="${color}" rx="3" opacity="0.85"/>`;
-    svg += `<text x="${padding.left + bw + 5}" y="${y + barH / 2 + 4}" font-size="10" fill="#333">${regionalIndexData.values[i]} (${regionalIndexData.changes[i] > 0 ? '+' : ''}${regionalIndexData.changes[i]}%)</text>`;
-  });
-
-  svg += '</svg>';
-  container.innerHTML = svg;
-}
-
-/**
- * 渲染船公司股价走势对比图
- */
-function renderStockPriceChart() {
-  const container = document.getElementById('chart-stock-price');
-  if (!container) return;
-  const width = container.clientWidth;
-  const height = Math.min(width * 0.5, 260);
-  const padding = { top: 20, right: 80, bottom: 35, left: 45 };
-  const chartW = width - padding.left - padding.right;
-  const chartH = height - padding.top - padding.bottom;
-
-  const allVals = [...stockPriceData.zhonggu, ...stockPriceData.antong];
-  const minVal = Math.min(...allVals) * 0.95;
-  const maxVal = Math.max(...allVals) * 1.05;
-
-  let svg = `<svg viewBox="0 0 ${width} ${height}" style="width:100%;height:auto;">`;
-
-  // 网格线
-  for (let i = 0; i <= 4; i++) {
-    const y = padding.top + (chartH / 4) * i;
-    const val = (maxVal - (maxVal - minVal) / 4 * i).toFixed(2);
-    svg += `<line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" stroke="#e0e0e0" stroke-width="1"/>`;
-    svg += `<text x="${padding.left - 8}" y="${y + 4}" text-anchor="end" font-size="10" fill="#888">${val}</text>`;
-  }
-
-  // 中谷物流折线
-  let pathD1 = '';
-  stockPriceData.zhonggu.forEach((val, i) => {
-    const x = padding.left + (chartW / (stockPriceData.days.length - 1)) * i;
-    const y = padding.top + chartH - ((val - minVal) / (maxVal - minVal)) * chartH;
-    pathD1 += (i === 0 ? 'M' : 'L') + ` ${x} ${y}`;
-  });
-  svg += `<path d="${pathD1}" fill="none" stroke="#1a5276" stroke-width="2.5"/>`;
-
-  // 安通控股折线
-  let pathD2 = '';
-  stockPriceData.antong.forEach((val, i) => {
-    const x = padding.left + (chartW / (stockPriceData.days.length - 1)) * i;
-    const y = padding.top + chartH - ((val - minVal) / (maxVal - minVal)) * chartH;
-    pathD2 += (i === 0 ? 'M' : 'L') + ` ${x} ${y}`;
-  });
-  svg += `<path d="${pathD2}" fill="none" stroke="#e67e22" stroke-width="2.5" stroke-dasharray="5,3"/>`;
-
-  // 数据点
-  stockPriceData.zhonggu.forEach((val, i) => {
-    const x = padding.left + (chartW / (stockPriceData.days.length - 1)) * i;
-    const y = padding.top + chartH - ((val - minVal) / (maxVal - minVal)) * chartH;
-    svg += `<circle cx="${x}" cy="${y}" r="3.5" fill="#1a5276" stroke="#fff" stroke-width="1.5"/>`;
-  });
-  stockPriceData.antong.forEach((val, i) => {
-    const x = padding.left + (chartW / (stockPriceData.days.length - 1)) * i;
-    const y = padding.top + chartH - ((val - minVal) / (maxVal - minVal)) * chartH;
-    svg += `<circle cx="${x}" cy="${y}" r="3.5" fill="#e67e22" stroke="#fff" stroke-width="1.5"/>`;
-  });
-
-  // X轴标签
-  stockPriceData.days.forEach((day, i) => {
-    const x = padding.left + (chartW / (stockPriceData.days.length - 1)) * i;
-    svg += `<text x="${x}" y="${height - 12}" text-anchor="middle" font-size="10" fill="#666">${day}</text>`;
-  });
-
-  // 图例
-  const lx = width - 75;
-  svg += `<line x1="${lx}" y1="18" x2="${lx + 20}" y2="18" stroke="#1a5276" stroke-width="2.5"/>`;
-  svg += `<text x="${lx + 25}" y="22" font-size="10" fill="#333">中谷物流</text>`;
-  svg += `<line x1="${lx}" y1="35" x2="${lx + 20}" y2="35" stroke="#e67e22" stroke-width="2.5" stroke-dasharray="5,3"/>`;
-  svg += `<text x="${lx + 25}" y="39" font-size="10" fill="#333">安通控股</text>`;
-
-  svg += '</svg>';
-  container.innerHTML = svg;
-}
-
-// 页面加载完成后渲染所有图表
-document.addEventListener('DOMContentLoaded', function() {
-  renderHainanMarketChart();
-  renderPDCITrendChart();
-  renderYangpuVolumeChart();
-  renderRegionalIndexChart();
-  renderStockPriceChart();
-});
-
-// 窗口大小改变时重绘图表
-window.addEventListener('resize', function() {
-  renderHainanMarketChart();
-  renderPDCITrendChart();
-  renderYangpuVolumeChart();
-  renderRegionalIndexChart();
-  renderStockPriceChart();
-});
+})();
